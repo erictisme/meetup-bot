@@ -1,0 +1,14 @@
+{
+  "rewrites": [
+    { "source": "/api/telegram", "destination": "/api/telegram.js" },
+    { "source": "/api/oauth-callback", "destination": "/api/oauth-callback.js" }
+  ],
+  "functions": {
+    "api/telegram.js": {
+      "includeFiles": "config/venues.json"
+    },
+    "api/oauth-callback.js": {
+      "includeFiles": "config/venues.json"
+    }
+  }
+}
