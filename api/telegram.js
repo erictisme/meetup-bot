@@ -190,10 +190,16 @@ async function handleMeet(chatId, text) {
 async function handleCommand(chatId, text) {
   const cmd = text.split(/\s+/)[0].toLowerCase().split('@')[0];
 
-  // Starting a command silently replaces any in-progress flow.
-  if (cmd !== '/cancel') {
-    const existing = await getFlow(chatId);
-    if (existing) await clearFlow(chatId);
+  // Read-only commands shouldn't crash if KV is unreachable.
+  const READ_ONLY = new Set(['/start', '/help']);
+
+  if (cmd !== '/cancel' && !READ_ONLY.has(cmd)) {
+    try {
+      const existing = await getFlow(chatId);
+      if (existing) await clearFlow(chatId);
+    } catch (err) {
+      console.error('flow check failed (KV unavailable?)', err.message);
+    }
   }
 
   switch (cmd) {
